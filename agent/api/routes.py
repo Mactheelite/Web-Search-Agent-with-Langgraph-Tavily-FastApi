@@ -1,10 +1,10 @@
 import logging
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse
 
-from agent.api.dependencies import AgentServiceDep
-from agent.schemas import HealthResponse, SearchRequest
+from agent.api.dependencies import AgentDep
+from agent.schemas import HealthResponse, SearchRequest, SearchResponse
+from agent.service import run_search
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -15,13 +15,10 @@ def health() -> HealthResponse:
     return HealthResponse()
 
 
-@router.post("/search")
-async def search(body: SearchRequest, service: AgentServiceDep) -> StreamingResponse:
+@router.post("/search", response_model=SearchResponse)
+def search(body: SearchRequest, agent: AgentDep) -> SearchResponse:
     try:
-        return StreamingResponse(
-            service.stream_search(body.query),
-            media_type="application/json",
-        )
+        return run_search(agent, body)
     except Exception:
         logger.exception("Search failed for query: %r", body.query)
         raise HTTPException(status_code=500, detail="Search failed.") from None

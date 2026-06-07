@@ -1,12 +1,11 @@
 from typing import Annotated
 
 from fastapi import Depends, Request
-
-from agent.service import SearchAgentService
-
-
-def get_agent_service(request: Request) -> SearchAgentService:
-    return request.app.state.agent_service
+from langgraph.graph.state import CompiledStateGraph
 
 
-AgentServiceDep = Annotated[SearchAgentService, Depends(get_agent_service)]
+def get_agent(request: Request) -> CompiledStateGraph:
+    return request.app.state.agent
+
+
+AgentDep = Annotated[CompiledStateGraph, Depends(get_agent)]

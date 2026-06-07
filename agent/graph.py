@@ -13,7 +13,6 @@ from agent.tools import build_tools
 SYSTEM_PROMPT = (
     "You are a helpful research assistant. "
     "Use the search_web tool to find current, accurate information. "
-    "Use the add tool only for arithmetic. "
     "Be concise and cite sources when possible."
 )
 
@@ -23,7 +22,7 @@ def build_llm(settings: Settings) -> BaseChatModel:
         model=settings.llm_model,
         model_provider="openai",
         api_key=settings.openai_api_key.get_secret_value(),
-        temperature=0,
+        temperature=0.6,
     )
 
 

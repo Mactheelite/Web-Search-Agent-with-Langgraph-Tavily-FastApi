@@ -4,12 +4,12 @@ from fastapi import FastAPI
 
 from agent.api.routes import router
 from agent.config import get_settings
-from agent.service import SearchAgentService
+from agent.service import create_agent
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.agent_service = SearchAgentService(get_settings())
+    app.state.agent = create_agent(get_settings())
     yield
 
 
